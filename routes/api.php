@@ -20,6 +20,10 @@ Route::post('register', 'API\UserController@register');
 Route::group(['middleware' => 'auth:api'], function(){
 		Route::post('details', 'API\UserController@details');
 		Route::get('logout', 'API\UserController@logout');
-		Route::post('details', 'API\CategoryController@store');
+		Route::post('addCategory', 'API\CategoryController@store');
+		Route::get('Category', 'API\CategoryController@index');
+		Route::get('showCategory/{Category}', 'API\CategoryController@show');
+		Route::post('editCategory/{Category}', 'API\CategoryController@update');
+		Route::delete('deleteCategory/{Category}', 'API\CategoryController@destroy');
 
 });
