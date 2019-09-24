@@ -4,80 +4,113 @@ namespace App\Http\Controllers\API;
 
 use App\CompanyInfo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
+
 
 class CompanyInfoController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+{   
+    private $photos_path;
+
+    public function __construct()
+    {
+        $this->photos_path = public_path('admin_asset/logo/');
+    }
     public function index()
     {
-        //
-    }
+         $data=CompanyInfo::find(1);
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+         if((bool)$data){
+            return response()->json([
+                    'status'=>1,
+                    'data'=>$data
+                 ]);
+         }else{
+
+            return response()->json([
+                    'status'=>0,
+                    'error'=>['error_code'=>201]
+                 ]);
+
+         }
+    }
+   
     public function create()
     {
-        //
+        
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+   
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\CompanyInfo  $companyInfo
-     * @return \Illuminate\Http\Response
-     */
+   
     public function show(CompanyInfo $companyInfo)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\CompanyInfo  $companyInfo
-     * @return \Illuminate\Http\Response
-     */
+    
     public function edit(CompanyInfo $companyInfo)
     {
-        //
+        
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CompanyInfo  $companyInfo
-     * @return \Illuminate\Http\Response
-     */
+    
     public function update(Request $request, CompanyInfo $companyInfo)
-    {
-        //
+    {   
+
+        $Validator=Validator::make($request->all(),[
+
+            'name'=> 'required',
+            'address'=> 'required',
+            'logostatus'=> 'required'
+
+        ]);
+
+        if ($Validator->fails()) { 
+                        return response()->json(['status'=>0,'error'=>$Validator->errors()], 401);            
+                    }
+
+        if($request->logostatus==1){
+             if (!is_dir($this->photos_path)) {
+                mkdir($this->photos_path, 0777);
+             }
+                
+             $photo = $request->file('logoimage');
+             $ext = $photo->getClientOriginalExtension();
+             $name = sha1(date('YmdHis') . str_random(30));
+             $file_name = $name . '.' . $photo->getClientOriginalExtension();
+             $photo->move($this->photos_path, $file_name);
+             
+             $request->request->add(['logo' =>$file_name]);
+            
+              $data=$companyInfo->update($request->only(['name','logo','address','mobile','email','workingtime']));
+         }else{
+             $data=$companyInfo->update($request->only(['name','address','mobile','email','workingtime']));
+         }
+
+        
+
+        if((bool)$data){
+
+            return response()->json([
+                    'status'=>1,
+                    'data'=>$data
+            ]);
+
+        }else{
+             
+             return response()->json([
+                     'status'=>0,
+                     'error'=>['error_code'=>204]
+            ]);
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\CompanyInfo  $companyInfo
-     * @return \Illuminate\Http\Response
-     */
+    
     public function destroy(CompanyInfo $companyInfo)
     {
         //

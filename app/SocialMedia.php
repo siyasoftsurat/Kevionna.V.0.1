@@ -5,8 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CompanyInfo extends Model
+class SocialMedia extends Model
 {
     use SoftDeletes;
-    protected $fillable=["name","logo","address","mobile","email","workingtime"];
+    protected $fillable=["media","link"];
 }
