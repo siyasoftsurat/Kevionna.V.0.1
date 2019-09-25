@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Migration\SoftDeletes;
 
 class CreateCompanyInfosTable extends Migration
 {
@@ -15,7 +16,14 @@ class CreateCompanyInfosTable extends Migration
     {
         Schema::create('company_infos', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('logo');
+            $table->text('address')->defualt('');
+            $table->string('mobile')->defualt('');
+            $table->string('email')->defualt('');
+            $table->text('workingtime')->defualt('');
             $table->timestamps();
+             $table->softDeletes();
         });
     }
 
