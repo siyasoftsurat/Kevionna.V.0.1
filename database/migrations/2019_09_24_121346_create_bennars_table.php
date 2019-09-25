@@ -16,8 +16,8 @@ class CreateBennarsTable extends Migration
         Schema::create('bennars', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('path');
-            $table->string('description',100);
-            $table->integer('categories_id');
+            $table->string('description',100)->nullable();
+            $table->integer('categories_id')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
